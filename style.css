@@ -1,0 +1,355 @@
+body {
+  background-color: #000;
+  font-family: "Courier New", monospace;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+  flex-direction: column;
+}
+
+.title {
+  font-size: 2.5rem;
+  color: #ffccff;
+  text-shadow: 2px 2px 4px #ff00ff;
+  margin-bottom: 0.5rem;
+  margin-top: -30px;
+}
+
+.cake-container {
+  text-align: center;
+  padding: 2rem;
+}
+
+.cake {
+  position: relative;
+  width: 120px;
+  height: 160px;
+  margin: 0 auto;
+  margin-top: 7rem;
+}
+
+.stick {
+  width: 10px;
+  height: 40px;
+  background-color: #ff69b4;
+  border-radius: 5px;
+}
+
+
+/* Gaya yang disamakan dengan .top-layer */
+.layer-top {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 0;
+  width: 100px;
+  height: 30px;
+  background: #add8e6;
+  border: 2px solid #000;
+  border-radius: 5px 5px 0 0;
+  z-index: -2;
+}
+
+/* Gaya yang disamakan dengan .middle-layer */
+.layer-middle {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 20px;
+  width: 110px;
+  height: 50px;
+  background: #ffb6c1;
+  border: 2px solid #000;
+  z-index: -1;
+}
+
+/* Gaya yang disamakan dengan .bottom-layer */
+.layer-bottom {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 60px;
+  width: 120px;
+  height: 70px;
+  background: #ffe4e1;
+  border-radius: 0 0 10px 10px;
+  border: 2px solid #000;
+}
+
+
+.candle-container {
+  position: absolute;
+  top: -30px; /* Adjust to place candle above the cake */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: -3;
+  /* Ini penting agar partikel api bisa bergerak bebas di dalam container lilin */
+  overflow: visible;
+}
+
+
+/* API UTAMA */
+.flame {
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 35px;
+  background: radial-gradient(
+    circle at 50% 80%,
+    rgba(255, 255, 100, 0.9),
+    rgba(255, 165, 0, 0.7),
+    rgba(255, 0, 0, 0.5)
+  );
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  box-shadow: 0 0 15px 8px rgba(255, 215, 0, 0.7);
+  animation: flicker 0.4s infinite alternate ease-in-out;
+  transition: all 0.1s ease-out; /* Transisi cepat untuk responsifitas */
+  transform-origin: bottom center;
+  z-index: 2;
+}
+
+@keyframes flicker {
+  0% {
+    transform: translateX(-50%) scaleY(1) scaleX(1);
+    opacity: 1;
+    filter: brightness(1);
+  }
+  50% {
+    transform: translateX(-50%) scaleY(1.1) scaleX(0.9);
+    opacity: 0.95;
+    filter: brightness(1.1);
+  }
+  100% {
+    transform: translateX(-50%) scaleY(1) scaleX(1);
+    opacity: 1;
+    filter: brightness(1);
+  }
+}
+
+/* Kelas untuk api yang ditiup (sebelum padam) */
+.flame.blowing {
+  animation: none; /* Hentikan flicker normal */
+  transform: translateX(-50%) scaleY(0.7) scaleX(1.5) rotate(0deg); /* Memipih dan melebar */
+  opacity: 0.7;
+  box-shadow: 0 0 10px 5px rgba(255, 165, 0, 0.4);
+  transition: transform 0.1s ease-out, opacity 0.1s ease-out,
+    box-shadow 0.1s ease-out;
+}
+
+/* Kelas saat api padam */
+.flame.extinguished {
+  background: transparent;
+  box-shadow: none;
+  animation: none;
+  opacity: 0;
+  transform: translateX(-50%) scaleY(0) scaleX(0);
+  transition: all 0.3s ease-in; /* Transisi untuk padam */
+}
+
+/* Sistem Partikel Sederhana untuk api yang 'terbang' */
+.fire-particle {
+  position: absolute;
+  background-color: orange;
+  border-radius: 30%;
+  opacity: 0;
+  pointer-events: none; /* Agar tidak mengganggu event mouse */
+  animation: fire-particle-fly 0.5s forwards ease-out;
+  z-index: 3;
+}   
+
+@keyframes fire-particle-fly {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+    background-color: orange;
+  }
+  50% {
+    transform: translate(var(--dx), var(--dy)) scale(0.7); /* Bergerak acak */
+    opacity: 0.7;
+    background-color: yellow;
+  }
+  100% {
+    transform: translate(var(--dx), var(--dy)) scale(0);
+    opacity: 0;
+    background-color: red;
+  }
+}
+
+/* Efek Asap */
+.smoke-puff {
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 10px;
+  background: radial-gradient(
+    circle,
+    rgba(150, 150, 150, 0.8),
+    rgba(100, 100, 100, 0.5),
+    transparent
+  );
+  border-radius: 50%;
+  opacity: 0;
+  animation: smoke-rise 1s forwards ease-out;
+  z-index: 0; /* Di belakang lilin utama */
+}
+
+@keyframes smoke-rise {
+  0% {
+    transform: translateX(-50%) translateY(0) scale(0.5);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-50%) translateY(-50px) scale(1.5);
+    opacity: 0;
+  }
+}
+
+.message {
+  font-size: 1.3rem;
+  color: #00ffcc;
+  text-shadow: 0 0 8px #0ff;
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+.message.hidden {
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.mic-status {
+  margin-top: 10px;
+  font-size: 0.9em;
+  color: #555;
+}
+
+/* Confetti background */
+.birthday-confetti {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(circle, #ff69b4 2px, transparent 2px),
+                    radial-gradient(circle, #00ffff 2px, transparent 2px),
+                    radial-gradient(circle, #ffff00 2px, transparent 2px);
+  background-size: 50px 50px;
+  background-position: 0 0, 25px 25px, 50px 50px;
+  opacity: 0.2;
+  z-index: -1000;
+}
+
+/* ===== Responsive for Small Devices (Mobile) ===== */
+@media (max-width: 480px) {
+  .title {
+    font-size: 1.8rem;
+    margin-top: -10px;
+  }
+
+  .cake {
+    transform: scale(0.7);
+    margin-top: 4rem;
+  }
+
+  .layer-top {
+    width: 70px;
+    height: 18px;
+  }
+
+  .layer-middle {
+    width: 80px;
+    height: 40px;
+    top: 15px;
+  }
+
+  .layer-bottom {
+    width: 90px;
+    height: 50px;
+    top: 55px;
+  }
+
+  .icing {
+    width: 80px;
+    height: 20px;
+    top: 5px;
+  }
+
+  .flame {
+    width: 12px;
+    height: 25px;
+  }
+
+  .stick {
+    height: 30px;
+    width: 6px;
+  }
+
+  .message {
+    font-size: 1rem;
+  }
+
+  .mic-status {
+    font-size: 0.8rem;
+  }
+}
+
+/* ===== Responsive for Medium Devices (Tablet) ===== */
+@media (min-width: 481px) and (max-width: 768px) {
+  .title {
+    font-size: 2rem;
+  }
+
+  .cake {
+    transform: scale(0.85);
+    margin-top: 5rem;
+  }
+
+  .layer-top {
+    width: 85px;
+    height: 25px;
+  }
+
+  .layer-middle {
+    width: 95px;
+    height: 45px;
+    top: 18px;
+  }
+
+  .layer-bottom {
+    width: 105px;
+    height: 60px;
+    top: 60px;
+  }
+
+  .icing {
+    width: 90px;
+    height: 25px;
+    top: 8px;
+  }
+
+  .flame {
+    width: 16px;
+    height: 30px;
+  }
+
+  .stick {
+    height: 35px;
+    width: 8px;
+  }
+
+  .message {
+    font-size: 1.1rem;
+  }
+
+  .mic-status {
+    font-size: 0.85rem;
+  }
+}
+
+/* ===== Large Devices (Desktop) stays default ===== */

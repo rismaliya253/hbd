@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kue Ulang Tahun Interaktif</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="birthday-confetti"></div>
+    <div class="cake-container">
+      <h1 class="title">
+        🎉 HAPPY BIRTHDAY <span class="name">mylove</span>! 🎉
+      </h1>
+      <p class="instruction">
+        Make a wish and blow the candle 🎂 (use your voice!)
+      </p>
+      <div class="cake">
+        <div class="layer layer-bottom"></div>
+        <div class="layer layer-middle"></div>
+        <div class="layer layer-top"></div>
+        <div class="icing"></div>
+        <div class="candle-container">
+            <div class="flame" id="flame"></div>
+             <div class="stick"></div>
+            <div class="fire-particles" id="fireParticles"></div>
+            <div class="smoke-puff" id="smokePuff"></div>
+          </div>
+        </div>
+      </div>
+      <div class="message" id="wishMessage" class="hidden">
+        Selamat Ulang Tahun!
+      </div>
+      <div class="mic-status" id="micStatus"></div>
+    </div>
+    <audio id="birthdaySong" src="happybirthday.mp3" preload="auto"></audio>
+
+    <script src="script.js"></script>
+  </body>
+</html>
+
